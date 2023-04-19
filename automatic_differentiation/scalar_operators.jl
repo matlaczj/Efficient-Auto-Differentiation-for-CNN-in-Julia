@@ -41,6 +41,6 @@ backward(::ScalarOperator{typeof(min)}, x, y, g) = begin
 	return (term1, term2)
 end
 
-sigmoid(x::GraphNode) = ScalarOperator(sigmoid, x)
-forward(::ScalarOperator{typeof(sigmoid)}, x) = 1 / (1 + exp(-x))
-backward(::ScalarOperator{typeof(sigmoid)}, x, g) = g * sigmoid(x) * (1 - sigmoid(x))
+relu(x::GraphNode) = ScalarOperator(relu, x)
+forward(::ScalarOperator{typeof(relu)}, x) = max(x, 0)
+backward(::ScalarOperator{typeof(relu)}, x, g) = g * isless(0, x)

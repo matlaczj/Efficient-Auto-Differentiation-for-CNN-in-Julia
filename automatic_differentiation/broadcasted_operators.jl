@@ -10,10 +10,6 @@ backward(::BroadcastedOperator{typeof(^)}, x, n, g) = tuple(g .* n .* x .^ (n - 
 forward(::BroadcastedOperator{typeof(mul!)}, A, x) = A * x
 backward(::BroadcastedOperator{typeof(mul!)}, A, x, g) = tuple(g * x', A' * g)
 
-sigmoid(x::GraphNode) = BroadcastedOperator(sigmoid, x)
-forward(::BroadcastedOperator{typeof(sigmoid)}, x) = 1 ./ (1 .+ exp.(-x))
-backward(::BroadcastedOperator{typeof(sigmoid)}, x, g) = tuple(g .* sigmoid(x) .* (1 .- sigmoid(x)))
-
 relu(x::GraphNode) = BroadcastedOperator(relu, x)
 forward(::BroadcastedOperator{typeof(relu)}, x) = max.(x, 0)
 backward(::BroadcastedOperator{typeof(relu)}, x, g) = tuple(g .* isless.(x, 0))

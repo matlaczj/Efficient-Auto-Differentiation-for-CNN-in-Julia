@@ -7,6 +7,7 @@ include("../broadcasted_operators.jl")
 using LinearAlgebra
 
 Wh = Variable(randn(10, 2), name = "wh")
+b = Variable(randn(10), name = "b")
 Wo = Variable(randn(1, 10), name = "wo")
 x = Variable([1.98, 4.434], name = "x")
 y = Variable([0.064], name = "y")
@@ -26,8 +27,8 @@ function mean_squared_loss(y, ŷ)
 	return Constant(0.5) .* (y .- ŷ) .^ Constant(2)
 end
 
-function net(x, wh, wo, y)
-	x̂ = dense(wh, x, relu)
+function net(x, wh, b, wo, y)
+	x̂ = dense(wh, b, x, relu)
 	x̂.name = "x̂"
 	ŷ = dense(wo, x̂, relu)
 	ŷ.name = "ŷ"
@@ -36,7 +37,7 @@ function net(x, wh, wo, y)
 
 	return topological_sort(E)
 end
-graph = net(x, Wh, Wo, y)
+graph = net(x, Wh, b, Wo, y)
 forward!(graph)
 backward!(graph)
 
