@@ -1,8 +1,12 @@
 include("basic_structures.jl")
 
-update_gradient!(node::Constant, gradient) = nothing
+# Updates the gradient of a constant node
+function update_gradient!(node::Constant, gradient)
+	return nothing
+end
 
-update_gradient!(node::GraphNode, gradient) = begin
+# Updates the gradient of a graph node. Accumulates gradients if the node has already been visited.
+function update_gradient!(node::GraphNode, gradient)
 	if isnothing(node.gradient)
 		node.gradient = gradient
 	else
@@ -10,6 +14,7 @@ update_gradient!(node::GraphNode, gradient) = begin
 	end
 end
 
+# Computes the gradients of the nodes in reverse topological order using backpropagation.
 function backward!(order::Vector; seed = 1.0)
 	result = last(order)
 	result.gradient = seed
@@ -20,14 +25,18 @@ function backward!(order::Vector; seed = 1.0)
 	return nothing
 end
 
+# Computes the gradient of a constant node (which is zero).
 function backward!(node::Constant)
 	return nothing
 end
 
+# Computes the gradient of a variable node (which is passed to it from the output node).
 function backward!(node::Variable)
 	return nothing
 end
 
+# Computes the gradient of an operator node, using the gradients of its output node(s) and the input node(s).
+# Accumulates the input gradients using the update_gradient! function.
 function backward!(node::Operator)
 	inputs = node.inputs
 	input_values = [input.output for input in inputs]

@@ -1,29 +1,25 @@
 include("basic_structures.jl")
-import Base: ^, sin, sum, *, max
+import Base: ^, sin, sum, *, +, -, max
 import LinearAlgebra: mul!
 
-^(x::GraphNode, n::GraphNode) = ScalarOperator(^, x, n)
-function forward(op::ScalarOperator{typeof(^)}, x, n)
-	return x^n
-end
-function backward(op::ScalarOperator{typeof(^)}, x, n, gradient)
-	term1 = gradient * n * x^(n - 1)
-	term2 = gradient * log(abs(x)) * x^n
-	return (term1, term2)
-end
+^(x::GraphNode, n::Number) = BroadcastedOperator(^, x, n)
+forward(::BroadcastedOperator{typeof(^)}, x, n) = x .^ n
+backward(::BroadcastedOperator{typeof(^)}, x, n, g) = tuple(g .* n .* x .^ (n - 1), nothing)
 
-sin(x::GraphNode) = ScalarOperator(sin, x)
-forward(::ScalarOperator{typeof(sin)}, x) = return sin(x)
-backward(::ScalarOperator{typeof(sin)}, x, g) = tuple(g * cos(x))
-
-# x * y (aka matrix multiplication)
 *(A::GraphNode, x::GraphNode) = BroadcastedOperator(mul!, A, x)
-forward(::BroadcastedOperator{typeof(mul!)}, A, x) = return A * x
+forward(::BroadcastedOperator{typeof(mul!)}, A, x) = A * x
 backward(::BroadcastedOperator{typeof(mul!)}, A, x, g) = tuple(g * x', A' * g)
 
-# x .* y (element-wise multiplication)
+sigmoid(x::GraphNode) = BroadcastedOperator(sigmoid, x)
+forward(::BroadcastedOperator{typeof(sigmoid)}, x) = 1 ./ (1 .+ exp.(-x))
+backward(::BroadcastedOperator{typeof(sigmoid)}, x, g) = tuple(g .* sigmoid(x) .* (1 .- sigmoid(x)))
+
+relu(x::GraphNode) = BroadcastedOperator(relu, x)
+forward(::BroadcastedOperator{typeof(relu)}, x) = max.(x, 0)
+backward(::BroadcastedOperator{typeof(relu)}, x, g) = tuple(g .* isless.(x, 0))
+
 Base.Broadcast.broadcasted(*, x::GraphNode, y::GraphNode) = BroadcastedOperator(*, x, y)
-forward(::BroadcastedOperator{typeof(*)}, x, y) = return x .* y
+forward(::BroadcastedOperator{typeof(*)}, x, y) = x .* y
 backward(node::BroadcastedOperator{typeof(*)}, x, y, g) =
 	let
 		𝟏 = ones(length(node.output))
@@ -33,15 +29,15 @@ backward(node::BroadcastedOperator{typeof(*)}, x, y, g) =
 	end
 
 Base.Broadcast.broadcasted(-, x::GraphNode, y::GraphNode) = BroadcastedOperator(-, x, y)
-forward(::BroadcastedOperator{typeof(-)}, x, y) = return x .- y
+forward(::BroadcastedOperator{typeof(-)}, x, y) = x .- y
 backward(::BroadcastedOperator{typeof(-)}, x, y, g) = tuple(g, -g)
 
 Base.Broadcast.broadcasted(+, x::GraphNode, y::GraphNode) = BroadcastedOperator(+, x, y)
-forward(::BroadcastedOperator{typeof(+)}, x, y) = return x .+ y
+forward(::BroadcastedOperator{typeof(+)}, x, y) = x .+ y
 backward(::BroadcastedOperator{typeof(+)}, x, y, g) = tuple(g, g)
 
 sum(x::GraphNode) = BroadcastedOperator(sum, x)
-forward(::BroadcastedOperator{typeof(sum)}, x) = return sum(x)
+forward(::BroadcastedOperator{typeof(sum)}, x) = sum(x)
 backward(::BroadcastedOperator{typeof(sum)}, x, g) =
 	let
 		𝟏 = ones(length(x))
@@ -50,7 +46,7 @@ backward(::BroadcastedOperator{typeof(sum)}, x, g) =
 	end
 
 Base.Broadcast.broadcasted(/, x::GraphNode, y::GraphNode) = BroadcastedOperator(/, x, y)
-forward(::BroadcastedOperator{typeof(/)}, x, y) = return x ./ y
+forward(::BroadcastedOperator{typeof(/)}, x, y) = x ./ y
 backward(node::BroadcastedOperator{typeof(/)}, x, y::Real, g) =
 	let
 		𝟏 = ones(length(node.output))
@@ -60,10 +56,11 @@ backward(node::BroadcastedOperator{typeof(/)}, x, y::Real, g) =
 	end
 
 Base.Broadcast.broadcasted(max, x::GraphNode, y::GraphNode) = BroadcastedOperator(max, x, y)
-forward(::BroadcastedOperator{typeof(max)}, x, y) = return max.(x, y)
+forward(::BroadcastedOperator{typeof(max)}, x, y) = max.(x, y)
 backward(::BroadcastedOperator{typeof(max)}, x, y, g) =
 	let
 		Jx = diagm(isless.(y, x))
 		Jy = diagm(isless.(x, y))
 		tuple(Jx' * g, Jy' * g)
 	end
+
