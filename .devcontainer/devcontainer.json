@@ -2,19 +2,23 @@
 {
 	"name": "Julia (Community)",
 	"image": "ghcr.io/julia-vscode/julia-devcontainer",
-
 	// Configure tool-specific properties.
 	"customizations": {
 		// Configure properties specific to VS Code.
 		"vscode": {
 			// Add the IDs of extensions you want installed when the container is created.
 			"extensions": [
-				"julialang.language-julia"
-			]
+				"julialang.language-julia",
+				"mathematic.vscode-latex",
+				"GitHub.copilot",
+				"0h7z.vscode-julia-format"
+			],
+			"editor.defaultFormatter": "0h7z.vscode-julia-format",
+			"editor.codeActionsOnSave": {
+				"source.fixAll.julia": true   
+			}
 		}
 	},
-
 	"postCreateCommand": "/julia-devcontainer-scripts/postcreate.jl",
-
 	"remoteUser": "vscode"
 }
