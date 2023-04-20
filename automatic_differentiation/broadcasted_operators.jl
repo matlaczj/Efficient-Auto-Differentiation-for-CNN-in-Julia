@@ -14,13 +14,17 @@ relu(x::GraphNode) = BroadcastedOperator(relu, x)
 forward(::BroadcastedOperator{typeof(relu)}, x) = max.(x, 0)
 backward(::BroadcastedOperator{typeof(relu)}, x, g) = tuple(g .* isless.(x, 0))
 
+flatten(x::GraphNode) = BroadcastedOperator(flatten, x)
+forward(::BroadcastedOperator{typeof(flatten)}, x) = reshape(x, 1, :)
+backward(::BroadcastedOperator{typeof(flatten)}, x, g) = (reshape(g, size(x)),)
+
 Base.Broadcast.broadcasted(*, x::GraphNode, y::GraphNode) = BroadcastedOperator(*, x, y)
 forward(::BroadcastedOperator{typeof(*)}, x, y) = x .* y
 backward(node::BroadcastedOperator{typeof(*)}, x, y, g) =
 	let
 		𝟏 = ones(length(node.output))
-		Jx = diagm(y .* 𝟏)
-		Jy = diagm(x .* 𝟏)
+		Jx = diagm(vec(y .* 𝟏))
+		Jy = diagm(vec(x .* 𝟏))
 		tuple(Jx' * g, Jy' * g)
 	end
 

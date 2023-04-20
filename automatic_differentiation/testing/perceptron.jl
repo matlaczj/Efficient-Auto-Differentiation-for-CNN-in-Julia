@@ -6,13 +6,6 @@ include("../scalar_operators.jl")
 include("../broadcasted_operators.jl")
 using LinearAlgebra
 
-Wh = Variable(randn(10, 2), name = "wh")
-b = Variable(randn(10), name = "b")
-Wo = Variable(randn(1, 10), name = "wo")
-x = Variable([1.98, 4.434], name = "x")
-y = Variable([0.064], name = "y")
-losses = Float64[]
-
 function dense(w, b, x, activation)
 	return activation(w * x .+ b)
 end
@@ -37,11 +30,26 @@ function net(x, wh, b, wo, y)
 
 	return topological_sort(E)
 end
+
+Wh = Variable(randn(10, 2), name = "wh")
+b = Variable(randn(10), name = "b")
+Wo = Variable(randn(1, 10), name = "wo")
+x = Variable([1.98, 4.434], name = "x")
+y = Variable([0.064], name = "y")
+losses = Float64[]
+
 graph = net(x, Wh, b, Wo, y)
+
 forward!(graph)
 backward!(graph)
+println("loss = $(graph[end].output)")
 
 for (i, n) in enumerate(graph)
-	print(i, ". ")
-	println(n)
+	if typeof(n) <: Variable
+		println("Node $i")
+		println(n.name)
+		println(n.output)
+		println(n.gradient)
+		println()
+	end
 end
