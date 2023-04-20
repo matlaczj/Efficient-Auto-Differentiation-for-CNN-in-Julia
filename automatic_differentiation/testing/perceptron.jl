@@ -42,14 +42,19 @@ graph = net(x, Wh, b, Wo, y)
 
 forward!(graph)
 backward!(graph)
-println("loss = $(graph[end].output)")
+# println("loss = $(graph[end].output)")
+
+# for (i, n) in enumerate(graph)
+# 	if typeof(n) <: Variable
+# 		println("Node $i")
+# 		println(n.name)
+# 		println(n.output)
+# 		println(n.gradient)
+# 		println()
+# 	end
+# end
 
 for (i, n) in enumerate(graph)
-	if typeof(n) <: Variable
-		println("Node $i")
-		println(n.name)
-		println(n.output)
-		println(n.gradient)
-		println()
-	end
+	print(i, ". ")
+	println(n)
 end

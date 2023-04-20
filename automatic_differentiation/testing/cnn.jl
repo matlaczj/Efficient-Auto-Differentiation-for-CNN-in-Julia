@@ -48,23 +48,22 @@ y = Variable(randn(1), name = "y")
 
 graph = net(x, wh, bh, wo, y)
 
-for (i, n) in enumerate(graph)
-	if typeof(n) <: Variable
-		println("Node $i")
-		println(n.name)
-		println(n.output)
-		println(n.gradient)
-		println()
-	end
-end
+# for (i, n) in enumerate(graph)
+# 	if typeof(n) <: Variable
+# 		println("Node $i")
+# 		println(n.name)
+# 		println(n.output)
+# 		println(n.gradient)
+# 		println()
+# 	end
+# end
 
-println("Forward pass")
+# println("Forward pass")
+
+forward!(graph)
+backward!(graph)
 
 for (i, n) in enumerate(graph)
 	print(i, ". ")
 	println(n)
 end
-
-
-forward!(graph)
-backward!(graph)
