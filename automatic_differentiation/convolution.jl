@@ -39,7 +39,6 @@ function forward(::BroadcastedOperator{typeof(conv)}, x, w)
 			out[i, j, :] = sum(w_flat .* r_field_flat, dims = 1)
 		end
 	end
-
 	return out
 end
 
@@ -82,9 +81,9 @@ function backward(::BroadcastedOperator{typeof(conv)}, x, w, g)
 			# reshape aaa1 to be of shape size(w)
 			aaa1 = reshape(aaa1, FH, FW, C, K)
 			gw += aaa1
-            aaa2 = w_flat * dout_local
-            # reshape aaa2 to be of shape size(r_field)
-            aaa2 = reshape(aaa2, FH, FW, C, :)
+			aaa2 = w_flat * dout_local
+			# reshape aaa2 to be of shape size(r_field)
+			aaa2 = reshape(aaa2, FH, FW, C, :)
 			gx_pad[(i-1)*stride+1:(i-1)*stride+FH, (j-1)*stride+1:(j-1)*stride+FW, :, :] += aaa2
 		end
 	end

@@ -44,3 +44,7 @@ end
 relu(x::GraphNode) = ScalarOperator(relu, x)
 forward(::ScalarOperator{typeof(relu)}, x) = max(x, 0)
 backward(::ScalarOperator{typeof(relu)}, x, g) = g * isless(0, x)
+
+logistic(x::GraphNode) = ScalarOperator(logistic, x)
+forward(::ScalarOperator{typeof(logistic)}, x) = 1 / (1 + exp(-x))
+backward(::ScalarOperator{typeof(logistic)}, x, g) = g * exp(-x) / (1 + exp(-x))^2
