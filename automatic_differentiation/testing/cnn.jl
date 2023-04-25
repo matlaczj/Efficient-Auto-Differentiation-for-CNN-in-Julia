@@ -74,6 +74,9 @@ function save_param_gradients!(graph, gradients_in_batch)
 			if is_bias(node)
 				average_bias_gradient!(node)
 			end
+			if !haskey(gradients_in_batch, node.name)
+				gradients_in_batch[node.name] = Vector{Any}()
+			end
 			push!(gradients_in_batch[node.name], node.gradient)
 		end
 	end
@@ -120,6 +123,16 @@ function build_graph()
 	return topological_sort(e), x, y
 end
 
+# calculate mean of list of same size and shape matrixes
+# by adding them together and dividing by number of matrixes
+function mean_of_matrixes(matrixes::Vector{Any})
+	sum = matrixes[1]
+	for i in 2:length(matrixes)
+		sum .+= matrixes[i]
+	end
+	return sum ./ length(matrixes)
+end
+
 function train_model(x, y, learning_rate, n_iterations, if_print)
 	graph, x_node, y_node = build_graph()
 	avg_losses = Vector{Float64}()
@@ -127,7 +140,8 @@ function train_model(x, y, learning_rate, n_iterations, if_print)
 	# total number of iterations is n_iterations * batch_size
 	for iter in 1:n_iterations
 		losses_in_batch = Vector{Float64}()
-		gradients_in_batch = Dict{String, Vector{Float64}}()
+		gradients_in_batch = Dict{String, Vector{Any}}()
+		mean_gradients = Dict{String, Any}()
 		println("Iteration $iter")
 		# iterate over 4th dimention of x
 		for i in 1:size(x, 4)
@@ -148,20 +162,43 @@ function train_model(x, y, learning_rate, n_iterations, if_print)
 			loss = graph[end].output[1]
 			push!(losses_in_batch, loss)
 		end
+		# print gradients_in_batch
+		for (key, value) in gradients_in_batch
+			println(key)
+			println(size(gradients_in_batch[key]))
+			for i in 1:length(gradients_in_batch[key])
+				println(size(gradients_in_batch[key][i]))
+			end
+		end
 		# update parameters
 		for (key, value) in gradients_in_batch
-			gradients_in_batch[key] = mean(gradients_in_batch[key], dims = 1)
+			println("update parameters--->", key)
+			# println(size(gradients_in_batch[key]))
+			println("gradients_in_batch[key] --->", typeof(gradients_in_batch[key]))
+			matrixes = gradients_in_batch[key]
+			sum = matrixes[1]
+			for i in 2:length(matrixes)
+				sum .+= matrixes[i]
+			end
+			mean = sum ./ length(matrixes)
+			println(size(mean))
+			println("mean --->", typeof(mean))
+			mean_gradients[key] = mean
+			# println(size(gradients_in_batch[key]))
 		end
 		for (idx, node) in enumerate(graph)
 			if has_name(node) && is_parameter(node)
-				node.output -= learning_rate .* gradients_in_batch[node.name]
+				println("learning_rate--->", node.name)
+				print(size(node.output))
+				print(size(mean_gradients[node.name]))
+				node.output -= learning_rate .* mean_gradients[node.name]
 			end
 		end
 		# get average loss
 		avg_loss = mean(losses_in_batch)
 		push!(avg_losses, avg_loss)
 	end
-	return losses
+	return avg_losses
 end
 
 train_ds = MNIST(:train)
@@ -173,8 +210,8 @@ x_train = reshape(x_train, size(x_train, 1), size(x_train, 2), 1, size(x_train, 
 y_train = y_train .== 5
 
 # take only 100 first samples of train datasets
-x_train = x_train[:, :, :, 1]
-y_train = y_train[1, :]
+x_train = x_train[:, :, :, 1:10]
+y_train = y_train[1:10, :]
 x = x_train
 y = y_train
 
@@ -184,8 +221,8 @@ y = y_train
 # channels = 1
 # x = randn(height, width, channels, n_samples)
 # y = randn(n_samples)
-n_iterations = 10
-learning_rate = 0.01
+n_iterations = 100
+learning_rate = 0.1
 losses = train_model(x, y, learning_rate, n_iterations, false)
 # visualize loss
 plot(losses, title = "Loss", xlabel = "Iteration", ylabel = "Loss")
