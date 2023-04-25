@@ -10,6 +10,8 @@ using Statistics
 using Plots
 using MLDatasets: MNIST
 using Images
+using Random
+Random.seed!(1)
 
 function conv(w, b, x, activation)
 	out = conv(x, w) .+ b
@@ -142,14 +144,14 @@ function train_model(x, y, learning_rate, n_iterations, if_print)
 		losses_in_batch = Vector{Float64}()
 		gradients_in_batch = Dict{String, Vector{Any}}()
 		mean_gradients = Dict{String, Any}()
-		println("Iteration $iter")
+		println("Batch $iter")
 		# iterate over 4th dimention of x
 		for i in 1:size(x, 4)
-			println("Sample $i")
+			# println("Sample $i")
 			# current x as a 4d tensor
 			curr_x = x[:, :, :, i]
 			curr_x = reshape(curr_x, size(curr_x, 1), size(curr_x, 2), size(curr_x, 3), 1)
-			# current y as a vector
+			# current y as a vectorkernel_size
 			curr_y = y[i, :]
 			# replace x and y nodes output
 			x_node.output = curr_x
