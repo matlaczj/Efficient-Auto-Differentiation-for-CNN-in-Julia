@@ -163,34 +163,34 @@ function train_model(x, y, learning_rate, n_iterations, if_print)
 			push!(losses_in_batch, loss)
 		end
 		# print gradients_in_batch
-		for (key, value) in gradients_in_batch
-			println(key)
-			println(size(gradients_in_batch[key]))
-			for i in 1:length(gradients_in_batch[key])
-				println(size(gradients_in_batch[key][i]))
-			end
-		end
+		# for (key, value) in gradients_in_batch
+		# 	println(key)
+		# 	println(size(gradients_in_batch[key]))
+		# 	for i in 1:length(gradients_in_batch[key])
+		# 		println(size(gradients_in_batch[key][i]))
+		# 	end
+		# end
 		# update parameters
 		for (key, value) in gradients_in_batch
-			println("update parameters--->", key)
-			# println(size(gradients_in_batch[key]))
-			println("gradients_in_batch[key] --->", typeof(gradients_in_batch[key]))
+			# println("update parameters--->", key)
+			# # println(size(gradients_in_batch[key]))
+			# println("gradients_in_batch[key] --->", typeof(gradients_in_batch[key]))
 			matrixes = gradients_in_batch[key]
 			sum = matrixes[1]
 			for i in 2:length(matrixes)
 				sum .+= matrixes[i]
 			end
 			mean = sum ./ length(matrixes)
-			println(size(mean))
-			println("mean --->", typeof(mean))
+			# println(size(mean))
+			# println("mean --->", typeof(mean))
 			mean_gradients[key] = mean
 			# println(size(gradients_in_batch[key]))
 		end
 		for (idx, node) in enumerate(graph)
 			if has_name(node) && is_parameter(node)
-				println("learning_rate--->", node.name)
-				print(size(node.output))
-				print(size(mean_gradients[node.name]))
+				# println("learning_rate--->", node.name)
+				# print(size(node.output))
+				# print(size(mean_gradients[node.name]))
 				node.output -= learning_rate .* mean_gradients[node.name]
 			end
 		end
@@ -210,8 +210,8 @@ x_train = reshape(x_train, size(x_train, 1), size(x_train, 2), 1, size(x_train, 
 y_train = y_train .== 5
 
 # take only 100 first samples of train datasets
-x_train = x_train[:, :, :, 1:10]
-y_train = y_train[1:10, :]
+x_train = x_train[:, :, :, 1:100]
+y_train = y_train[1:100, :]
 x = x_train
 y = y_train
 
@@ -223,6 +223,10 @@ y = y_train
 # y = randn(n_samples)
 n_iterations = 100
 learning_rate = 0.1
+# measure time of execution
+start = time()
 losses = train_model(x, y, learning_rate, n_iterations, false)
+finish = time()
+println("Time of execution: ", finish - start)
 # visualize loss
 plot(losses, title = "Loss", xlabel = "Iteration", ylabel = "Loss")
