@@ -16,23 +16,23 @@ backward(::BroadcastedOperator{typeof(relu)}, x, g) = tuple(g .* isless.(x, 0))
 
 logistic(x::GraphNode) = BroadcastedOperator(logistic, x)
 forward(::BroadcastedOperator{typeof(logistic)}, x) = 1 ./ (1 .+ exp.(-x))
-backward(::BroadcastedOperator{typeof(logistic)}, x, g) = tuple(g .* exp.(x) ./ (1 .+ exp.(x)).^2)
+function backward(::BroadcastedOperator{typeof(logistic)}, x, g)
+    return tuple(g .* exp.(x) ./ (1 .+ exp.(x)) .^ 2)
+end
 
 flatten(x::GraphNode) = BroadcastedOperator(flatten, x)
-function forward(::BroadcastedOperator{typeof(flatten)}, x)
-	reshape(x, 1, :)
-end
+forward(::BroadcastedOperator{typeof(flatten)}, x) = reshape(x, 1, :)
 backward(::BroadcastedOperator{typeof(flatten)}, x, g) = (reshape(g, size(x)),)
 
 Base.Broadcast.broadcasted(*, x::GraphNode, y::GraphNode) = BroadcastedOperator(*, x, y)
 forward(::BroadcastedOperator{typeof(*)}, x, y) = x .* y
 backward(node::BroadcastedOperator{typeof(*)}, x, y, g) =
-	let
-		𝟏 = ones(length(node.output))
-		Jx = diagm(vec(y .* 𝟏))
-		Jy = diagm(vec(x .* 𝟏))
-		tuple(Jx' * g, Jy' * g)
-	end
+    let
+        𝟏 = ones(length(node.output))
+        Jx = diagm(vec(y .* 𝟏))
+        Jy = diagm(vec(x .* 𝟏))
+        tuple(Jx' * g, Jy' * g)
+    end
 
 Base.Broadcast.broadcasted(-, x::GraphNode, y::GraphNode) = BroadcastedOperator(-, x, y)
 forward(::BroadcastedOperator{typeof(-)}, x, y) = x .- y
@@ -45,28 +45,28 @@ backward(::BroadcastedOperator{typeof(+)}, x, y, g) = tuple(g, g)
 sum(x::GraphNode) = BroadcastedOperator(sum, x)
 forward(::BroadcastedOperator{typeof(sum)}, x) = sum(x)
 backward(::BroadcastedOperator{typeof(sum)}, x, g) =
-	let
-		𝟏 = ones(length(x))
-		J = 𝟏'
-		tuple(J' * g)
-	end
+    let
+        𝟏 = ones(length(x))
+        J = 𝟏'
+        tuple(J' * g)
+    end
 
 Base.Broadcast.broadcasted(/, x::GraphNode, y::GraphNode) = BroadcastedOperator(/, x, y)
 forward(::BroadcastedOperator{typeof(/)}, x, y) = x ./ y
-backward(node::BroadcastedOperator{typeof(/)}, x, y::Real, g) =
-	let
-		𝟏 = ones(length(node.output))
-		Jx = diagm(𝟏 ./ y)
-		Jy = (-x ./ y .^ 2)
-		tuple(Jx' * g, Jy' * g)
-	end
+function backward(node::BroadcastedOperator{typeof(/)}, x, y::Real, g)
+    let
+        𝟏 = ones(length(node.output))
+        Jx = diagm(𝟏 ./ y)
+        Jy = (-x ./ y .^ 2)
+        tuple(Jx' * g, Jy' * g)
+    end
+end
 
 Base.Broadcast.broadcasted(max, x::GraphNode, y::GraphNode) = BroadcastedOperator(max, x, y)
 forward(::BroadcastedOperator{typeof(max)}, x, y) = max.(x, y)
 backward(::BroadcastedOperator{typeof(max)}, x, y, g) =
-	let
-		Jx = diagm(isless.(y, x))
-		Jy = diagm(isless.(x, y))
-		tuple(Jx' * g, Jy' * g)
-	end
-
+    let
+        Jx = diagm(isless.(y, x))
+        Jy = diagm(isless.(x, y))
+        tuple(Jx' * g, Jy' * g)
+    end

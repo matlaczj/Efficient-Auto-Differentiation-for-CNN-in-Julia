@@ -15,9 +15,7 @@ mutable struct Variable <: GraphNode
 	gradient::Any
 	name::String
 	# Constructor for creating a new variable
-	function Variable(output; name = "?")
-		new(output, nothing, name)
-	end
+	Variable(output; name = "?") = new(output, nothing, name)
 end
 
 # Define a mutable type for scalar operators
@@ -28,7 +26,7 @@ mutable struct ScalarOperator{F} <: Operator
 	name::String
 	# Constructor for creating a new scalar operator
 	function ScalarOperator(fun, inputs...; name = "?")
-		new{typeof(fun)}(inputs, nothing, nothing, name)
+		return new{typeof(fun)}(inputs, nothing, nothing, name)
 	end
 end
 
@@ -40,7 +38,7 @@ mutable struct BroadcastedOperator{F} <: Operator
 	name::String
 	# Constructor for creating a new broadcasted operator
 	function BroadcastedOperator(fun, inputs...; name = "?")
-		new{typeof(fun)}(inputs, nothing, nothing, name)
+		return new{typeof(fun)}(inputs, nothing, nothing, name)
 	end
 end
 

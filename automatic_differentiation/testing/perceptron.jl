@@ -6,29 +6,21 @@ include("../scalar_operators.jl")
 include("../broadcasted_operators.jl")
 using LinearAlgebra
 
-function dense(w, b, x, activation)
-	return activation(w * x .+ b)
-end
-function dense(w, x, activation)
-	return activation(w * x)
-end
-function dense(w, x)
-	return w * x
-end
+dense(w, b, x, activation) = activation(w * x .+ b)
+dense(w, x, activation) = activation(w * x)
+dense(w, x) = w * x
 
-function mean_squared_loss(y, ŷ)
-	return Constant(0.5) .* (y .- ŷ) .^ Constant(2)
-end
+mean_squared_loss(y, ŷ) = Constant(0.5) .* (y .- ŷ) .^ Constant(2)
 
 function net(x, wh, b, wo, y)
-	x̂ = dense(wh, b, x, relu)
-	x̂.name = "x̂"
-	ŷ = dense(wo, x̂, relu)
-	ŷ.name = "ŷ"
-	E = mean_squared_loss(y, ŷ)
-	E.name = "loss"
+    x̂ = dense(wh, b, x, relu)
+    x̂.name = "x̂"
+    ŷ = dense(wo, x̂, relu)
+    ŷ.name = "ŷ"
+    E = mean_squared_loss(y, ŷ)
+    E.name = "loss"
 
-	return topological_sort(E)
+    return topological_sort(E)
 end
 
 Wh = Variable(randn(10, 2), name = "wh")
@@ -42,19 +34,19 @@ graph = net(x, Wh, b, Wo, y)
 
 forward!(graph)
 backward!(graph)
-# println("loss = $(graph[end].output)")
-
-# for (i, n) in enumerate(graph)
-# 	if typeof(n) <: Variable
-# 		println("Node $i")
-# 		println(n.name)
-# 		println(n.output)
-# 		println(n.gradient)
-# 		println()
-# 	end
-# end
+println("loss = $(graph[end].output)")
 
 for (i, n) in enumerate(graph)
-	print(i, ". ")
-	println(n)
+    if typeof(n) <: Variable
+        println("Node $i")
+        println(n.name)
+        println(n.output)
+        println(n.gradient)
+        println()
+    end
+end
+
+for (i, n) in enumerate(graph)
+    print(i, ". ")
+    println(n)
 end

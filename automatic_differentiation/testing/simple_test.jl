@@ -15,18 +15,17 @@ order = topological_sort(sine)
 y = forward!(order)
 
 if y == -0.13235175009777303
-	println("Test passed")
+    println("Test passed")
 else
-	println("Test failed")
+    println("Test failed")
 end
 println("y = $y")
-
 
 backward!(order)
 
 if x.gradient == 9.912028118634735
-	println("Test passed")
+    println("Test passed")
 else
-	println("Test failed")
+    println("Test failed")
 end
 println("∂y/∂x = $(x.gradient)")
