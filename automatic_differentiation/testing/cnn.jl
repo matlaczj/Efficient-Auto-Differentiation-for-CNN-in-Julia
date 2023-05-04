@@ -18,7 +18,7 @@ function conv(w, b, x, activation)
 	return activation(out)
 end
 dense(w, b, x, activation) = activation((x * w) .+ b)
-mean_squared_loss(y, ŷ) = Constant(0.5) .* (y .- ŷ) .^ Constant(2)
+mean_squared_loss(y, ŷ) = Constant{Float64}(0.5) .* (y .- ŷ) .^ Constant{Float64}(2)
 flatten(x) = flatten(x)
 
 update_weight!(node, learning_rate) = node.output -= learning_rate .* node.gradient
@@ -84,13 +84,20 @@ function build_graph()
 	kernel_size = 3
 	input_channels = 1
 	out_channels = 4
-	x = Variable(randn(input_size, input_size, input_channels, 1), name = "x")
+	x = Variable{Array{Float64, 4}}(randn(input_size, input_size, input_channels, 1)::Array{Float64, 4}, name = "x")
 	wh =
-		Variable(randn(kernel_size, kernel_size, input_channels, out_channels), name = "wh")
-	bh = Variable(randn(1, 1, out_channels, 1), name = "bh")
-	wo = Variable(randn((input_size - 2) * (input_size - 2) * out_channels, 1), name = "wo")
-	bo = Variable(randn(1, 1), name = "bo")
-	y = Variable(randn(1), name = "y")
+		Variable{Array{Float64, 4}}(randn(kernel_size, kernel_size, input_channels, out_channels)::Array{Float64, 4}, name = "wh")
+	bh = Variable{Array{Float64, 4}}(randn(1, 1, out_channels, 1)::Array{Float64, 4}, name = "bh")
+	wo = Variable{Matrix{Float64}}(randn((input_size - 2) * (input_size - 2) * out_channels, 1)::Matrix{Float64}, name = "wo")
+	bo = Variable{Matrix{Float64}}(randn(1, 1)::Matrix{Float64}, name = "bo")
+	y = Variable{Vector{Float64}}(randn(1)::Vector{Float64}, name = "y")
+
+	print(typeof(x.output))
+	print(typeof(wh.output))
+	print(typeof(bh.output))
+	print(typeof(wo.output))
+	print(typeof(bo.output))
+	print(typeof(y.output))
 
 	x̂ = conv(wh, bh, x, relu)
 	x̂.name = "x̂"

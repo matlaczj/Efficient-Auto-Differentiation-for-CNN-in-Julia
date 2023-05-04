@@ -10,13 +10,16 @@ struct Constant{T} <: GraphNode
 end
 
 # Define a mutable type for variables
-mutable struct Variable <: GraphNode
-	output::Any
+mutable struct Variable{T} <: GraphNode
+	output::T
 	gradient::Any
 	name::String
 	# Constructor for creating a new variable
-	Variable(output; name = "?") = new(output, nothing, name)
+	function Variable{T}(output::T; name::String = "?") where {T}
+		new{T}(output, nothing, name)
+	end
 end
+
 
 # Define a mutable type for scalar operators
 mutable struct ScalarOperator{F} <: Operator
