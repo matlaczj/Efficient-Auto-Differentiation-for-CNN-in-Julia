@@ -116,6 +116,8 @@ function train_model(x, y, learning_rate, n_iterations, if_print)
 	graph, x_node, y_node = build_graph()
 	# Create a vector to store the average loss after each iteration
 	avg_losses = Vector{Float64}()
+	# Create a vector to store times of forward and backward pass
+	times = Vector{Float64}()
 
 	# Iterate over the specified number of batches
 	for iter ∈ 1:n_iterations
@@ -138,7 +140,11 @@ function train_model(x, y, learning_rate, n_iterations, if_print)
 			x_node.output = curr_x
 			y_node.output = curr_y
 			# Perform a forward pass through the graph and update the gradients
+			start = time()
 			learning_iteration!(graph, learning_rate, if_print)
+			finish = time()
+			# Save the time of the forward and backward pass
+			push!(times, finish - start)
 			# Save the gradients for each parameter in the graph
 			save_param_gradients!(graph, gradients_in_batch)
 			# Get the loss for the current input and append it to the losses in the batch vector
@@ -170,7 +176,7 @@ function train_model(x, y, learning_rate, n_iterations, if_print)
 		push!(avg_losses, avg_loss)
 	end
 	# Return the vector of average losses
-	return avg_losses, graph
+	return avg_losses, graph, times
 end
 
 train_ds = MNIST(:train)
@@ -186,7 +192,18 @@ y = y_train
 n_batches = 100
 learning_rate = 0.1
 start = time()
-losses, graph = train_model(x, y, learning_rate, n_batches, false)
+losses, graph, times = train_model(x, y, learning_rate, n_batches, false)
 finish = time()
 println("Time of execution: ", finish - start)
 plot(losses, title = "Loss", xlabel = "Iteration", ylabel = "Loss")
+
+avg_time = mean(times)
+println("Average time of forward and backward pass: ", avg_time)
+std_time = std(times)
+println("Standard deviation of time of forward and backward pass: ", std_time)
+median_time = median(times)
+println("Median time of forward and backward pass: ", median_time)
+q1 = quantile(times, 0.25)
+q3 = quantile(times, 0.75)
+iqr_time = q3 - q1
+println("Interquartile range of time of forward and backward pass: ", iqr_time)
