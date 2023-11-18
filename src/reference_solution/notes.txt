@@ -1,0 +1,24 @@
+input_shape: The shape of the input data for the model. In our case, the input shape is (28, 28, 1) which means that the input data is a 28x28 grayscale image.
+num_filters_1: The number of filters (or feature detectors) in the first convolutional layer of the model.
+num_filters_2: The number of filters in the second convolutional layer of the model.
+kernel_size: The size of the convolutional kernel used in the convolutional layers. In our case, the kernel size is (3, 3).
+pool_size: The size of the pooling window used in the max pooling layers. In our case, the pool size is (2, 2).
+num_units: The number of units (or neurons) in the fully connected layer of the model.
+num_classes: The number of output classes in the classification problem. In our case, there are 10 output classes.
+learning_rate: The learning rate used in the optimization algorithm. In our case, the learning rate is 0.01.
+batch_size: The number of samples in each batch used during training. In our case, the batch size is 256.
+epochs: The number of times the entire training dataset is passed through the model during training. In our case, the model is trained for 1 epoch.
+activation_1: The activation function used in the convolutional layers. In our case, the activation function is ReLU.
+activation_2: The activation function used in the output layer of the model. In our case, the activation function is Softmax.
+optimizer: The optimization algorithm used to update the weights of the model during training. In our case, the optimizer is Stochastic Gradient Descent (SGD).
+loss: The loss function used to evaluate the performance of the model during training. In our case, the loss function is Categorical Crossentropy
+(-sum i (y_i * log(p_i)), where y_i is the true label and p_i is the predicted probability of the ith class).
+metric: The metric used to evaluate the performance of the model during training and testing. In our case, the metric is Accuracy.
+
+The MNIST dataset contains 70,000 images of handwritten digits, each with a resolution of 28 x 28 pixels. The images are grayscale, 
+meaning that each pixel has a single value between 0 and 255, representing the intensity of the pixel. The training set contains 60,000 images, 
+while the test set contains 10,000 images. Each image is associated with a corresponding label indicating the digit that the image represents, 
+ranging from 0 to 9.
+
+
+

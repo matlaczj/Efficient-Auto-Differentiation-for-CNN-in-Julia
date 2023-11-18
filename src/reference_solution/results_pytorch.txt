@@ -1,0 +1,115 @@
+conda activate base
+/opt/conda/bin/python /workspaces/PythonProjects/src/algorytmy/reference_solution/in_pytorch.py
+(base) vscode ➜ /workspaces/PythonProjects (master) $ conda activate base
+(base) vscode ➜ /workspaces/PythonProjects (master) $ /opt/conda/bin/python /workspaces/PythonProjects/src/algorytmy/reference_solution/in_pytorch.py
+2023-04-25 12:21:22.405216: I tensorflow/core/platform/cpu_feature_guard.cc:193] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE4.1 SSE4.2 AVX AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+Running on CPU
+Model(
+  (conv1): Conv2d(1, 4, kernel_size=(3, 3), stride=(1, 1))
+  (flatten): Flatten(start_dim=1, end_dim=-1)
+  (fc1): Linear(in_features=2704, out_features=1, bias=True)
+  (activation_1): ReLU()
+)
+Epoch 1/100
+Batch 1/1, Epoch 2/100
+Batch 1/1, Epoch 3/100
+Batch 1/1, Epoch 4/100
+Batch 1/1, Epoch 5/100
+Batch 1/1, Epoch 6/100
+Batch 1/1, Epoch 7/100
+Batch 1/1, Epoch 8/100
+Batch 1/1, Epoch 9/100
+Batch 1/1, Epoch 10/100
+Batch 1/1, Epoch 11/100
+Batch 1/1, Epoch 12/100
+Batch 1/1, Epoch 13/100
+Batch 1/1, Epoch 14/100
+Batch 1/1, Epoch 15/100
+Batch 1/1, Epoch 16/100
+Batch 1/1, Epoch 17/100
+Batch 1/1, Epoch 18/100
+Batch 1/1, Epoch 19/100
+Batch 1/1, Epoch 20/100
+Batch 1/1, Epoch 21/100
+Batch 1/1, Epoch 22/100
+Batch 1/1, Epoch 23/100
+Batch 1/1, Epoch 24/100
+Batch 1/1, Epoch 25/100
+Batch 1/1, Epoch 26/100
+Batch 1/1, Epoch 27/100
+Batch 1/1, Epoch 28/100
+Batch 1/1, Epoch 29/100
+Batch 1/1, Epoch 30/100
+Batch 1/1, Epoch 31/100
+Batch 1/1, Epoch 32/100
+Batch 1/1, Epoch 33/100
+Batch 1/1, Epoch 34/100
+Batch 1/1, Epoch 35/100
+Batch 1/1, Epoch 36/100
+Batch 1/1, Epoch 37/100
+Batch 1/1, Epoch 38/100
+Batch 1/1, Epoch 39/100
+Batch 1/1, Epoch 40/100
+Batch 1/1, Epoch 41/100
+Batch 1/1, Epoch 42/100
+Batch 1/1, Epoch 43/100
+Batch 1/1, Epoch 44/100
+Batch 1/1, Epoch 45/100
+Batch 1/1, Epoch 46/100
+Batch 1/1, Epoch 47/100
+Batch 1/1, Epoch 48/100
+Batch 1/1, Epoch 49/100
+Batch 1/1, Epoch 50/100
+Batch 1/1, Epoch 51/100
+Batch 1/1, Epoch 52/100
+Batch 1/1, Epoch 53/100
+Batch 1/1, Epoch 54/100
+Batch 1/1, Epoch 55/100
+Batch 1/1, Epoch 56/100
+Batch 1/1, Epoch 57/100
+Batch 1/1, Epoch 58/100
+Batch 1/1, Epoch 59/100
+Batch 1/1, Epoch 60/100
+Batch 1/1, Epoch 61/100
+Batch 1/1, Epoch 62/100
+Batch 1/1, Epoch 63/100
+Batch 1/1, Epoch 64/100
+Batch 1/1, Epoch 65/100
+Batch 1/1, Epoch 66/100
+Batch 1/1, Epoch 67/100
+Batch 1/1, Epoch 68/100
+Batch 1/1, Epoch 69/100
+Batch 1/1, Epoch 70/100
+Batch 1/1, Epoch 71/100
+Batch 1/1, Epoch 72/100
+Batch 1/1, Epoch 73/100
+Batch 1/1, Epoch 74/100
+Batch 1/1, Epoch 75/100
+Batch 1/1, Epoch 76/100
+Batch 1/1, Epoch 77/100
+Batch 1/1, Epoch 78/100
+Batch 1/1, Epoch 79/100
+Batch 1/1, Epoch 80/100
+Batch 1/1, Epoch 81/100
+Batch 1/1, Epoch 82/100
+Batch 1/1, Epoch 83/100
+Batch 1/1, Epoch 84/100
+Batch 1/1, Epoch 85/100
+Batch 1/1, Epoch 86/100
+Batch 1/1, Epoch 87/100
+Batch 1/1, Epoch 88/100
+Batch 1/1, Epoch 89/100
+Batch 1/1, Epoch 90/100
+Batch 1/1, Epoch 91/100
+Batch 1/1, Epoch 92/100
+Batch 1/1, Epoch 93/100
+Batch 1/1, Epoch 94/100
+Batch 1/1, Epoch 95/100
+Batch 1/1, Epoch 96/100
+Batch 1/1, Epoch 97/100
+Batch 1/1, Epoch 98/100
+Batch 1/1, Epoch 99/100
+Batch 1/1, Epoch 100/100
+Batch 1/1, Elapsed time: 0.17 seconds
+(base) vscode ➜ /workspaces/PythonProjects (master) $ 

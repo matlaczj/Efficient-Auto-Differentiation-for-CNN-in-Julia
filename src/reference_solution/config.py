@@ -1,0 +1,12 @@
+input_shape = (28, 28, 1)
+num_filters_1 = 4
+kernel_size = (3, 3)
+num_units = 1
+learning_rate = 0.1
+batch_size = 100
+epochs = 100
+activation_1 = "relu"
+activation_2 = "relu"
+optimizer = "sgd"
+loss = "mean_squared_error"
+metric = "accuracy"
