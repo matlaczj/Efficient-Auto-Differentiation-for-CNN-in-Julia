@@ -1,7 +1,7 @@
 # Efficient Automatic Differentiation for Convolutional Neural Networks in Julia
 
 <p align="center">
-  <img src="efficient-automatic-differentiation-for-convolutional-neural-networks-in-julia.png" alt="Logo" width="400"/>
+  <img src="logo.png" alt="Logo" width="400"/>
 </p>
 
 ## Table of Contents
