@@ -46,7 +46,7 @@ Details of the convolution operation are explained, including the forward and ba
 ### Training Process
 The training process involves building a computation graph, iterating over training iterations, performing learning iterations, saving parameter gradients, calculating loss, and updating parameters.
 
-![alt text](src\automatic_differentiation\testing\results.png "Training process.")
+![alt text](results.png "Training process.")
 
 ## Optimization
 The report document outlines optimization strategies employed to enhance execution speed, including custom implementations of operations, efficient array operations, and the use of multiple dispatch.
