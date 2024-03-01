@@ -31,6 +31,11 @@ The report document discusses the current state of automatic differentiation tec
 The project conducts experiments to compare the training speeds of TensorFlow and PyTorch when training a CNN model on the MNIST dataset. The baseline results provide a foundation for evaluating the custom Julia implementation.
 
 ## Implementation
+
+<p align="center">
+  <img src="project_structure.png" alt="project_structure"/>
+</p>
+
 ### Structures
 The project defines various structures for manipulating a computational graph, including abstract types for graph nodes, operators, constants, variables, scalar operators, and broadcasted operators.
 

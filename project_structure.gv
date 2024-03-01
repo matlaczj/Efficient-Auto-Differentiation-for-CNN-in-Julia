@@ -1,0 +1,54 @@
+digraph {
+	rankdir=LR
+	A [label="Project Root"]
+	B [label=".devcontainer/devcontainer.json"]
+	C [label=".gitignore"]
+	D [label=".npmignore"]
+	E [label="readme.md"]
+	F [label=src]
+	G [label=reports]
+	H [label=automatic_differentiation]
+	I [label=reference_solution]
+	J [label="test-project"]
+	K [label="basic_structures.jl"]
+	L [label="backward_pass.jl"]
+	M [label="forward_pass.jl"]
+	N [label="graph_building.jl"]
+	O [label="scalar_operators.jl"]
+	P [label="broadcasted_operators.jl"]
+	Q [label="convolution.jl"]
+	R [label="in_tensorflow.py"]
+	S [label="in_pytorch.py"]
+	T [label="config.py"]
+	U [label="mnist_dataset.py"]
+	V [label="notes.txt"]
+	W [label="results_pytorch.txt"]
+	X [label="results_tensorflow.txt"]
+	Y [label="test-utils-no-lc.sh"]
+	Z [label="test.sh"]
+	A -> B
+	A -> C
+	A -> D
+	A -> E
+	A -> F
+	A -> G
+	F -> H
+	F -> I
+	F -> J
+	H -> K
+	H -> L
+	H -> M
+	H -> N
+	H -> O
+	H -> P
+	H -> Q
+	I -> R
+	I -> S
+	I -> T
+	I -> U
+	I -> V
+	I -> W
+	I -> X
+	J -> Y
+	J -> Z
+}
